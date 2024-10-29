@@ -1,5 +1,3 @@
-Here’s an updated README.md with details on setting up and running the modules:
-
 GSM Signal Sniffer and GPS Spoofer
 
 This is a playful side project that does the following:
@@ -65,3 +63,5 @@ Modules
 	•	gsm_logger: A Cython-based logger module that captures and logs GSM messages efficiently into a file.
 	•	gps_spoofer: A separate Python module that uses ADB to send fake GPS coordinates to an Android device.
 	•	run.py: The main execution script that coordinates the GSM signal listening, GPS spoofing, and logging functions.
+
+<img width="1440" alt="Screenshot 2024-10-29 at 10 11 34" src="https://github.com/user-attachments/assets/d839f17a-2709-4179-b23f-71cd227fe512">
