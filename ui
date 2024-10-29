@@ -1,0 +1,114 @@
+import { useState } from 'react'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { MapPin, Radio, Wifi } from "lucide-react"
+
+export default function Dashboard() {
+  const [gsmLog, setGsmLog] = useState<string[]>([])
+  const [gpsLocation, setGpsLocation] = useState({ lat: 37.7749, lng: -122.4194 }) // San Francisco
+  const [ipInfo, setIpInfo] = useState<any>(null)
+
+  const handleStartGSM = () => {
+    // This would actually start the GSM sniffing process
+    setGsmLog(prev => [...prev, "Started GSM sniffing..."])
+  }
+
+  const handleSpoofGPS = () => {
+    // This would actually spoof the GPS location
+    setGsmLog(prev => [...prev, `Spoofed GPS to: ${gpsLocation.lat}, ${gpsLocation.lng}`])
+  }
+
+  const handleIPLookup = async () => {
+    // This would actually perform the IP lookup
+    const response = await fetch('http://ip-api.com/json/')
+    const data = await response.json()
+    setIpInfo(data)
+  }
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">GSM Signal Sniffer and GPS Spoofer</h1>
+      <Tabs defaultValue="gsm" className="w-full">
+        <TabsList>
+          <TabsTrigger value="gsm">GSM Sniffer</TabsTrigger>
+          <TabsTrigger value="gps">GPS Spoofer</TabsTrigger>
+          <TabsTrigger value="ip">IP Geolocation</TabsTrigger>
+        </TabsList>
+        <TabsContent value="gsm">
+          <Card>
+            <CardHeader>
+              <CardTitle>GSM Signal Sniffer</CardTitle>
+              <CardDescription>Capture nearby GSM signals</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={handleStartGSM}>
+                <Radio className="mr-2 h-4 w-4" /> Start Sniffing
+              </Button>
+              <div className="mt-4 h-40 overflow-y-auto border p-2">
+                {gsmLog.map((log, index) => (
+                  <div key={index}>{log}</div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="gps">
+          <Card>
+            <CardHeader>
+              <CardTitle>GPS Spoofer</CardTitle>
+              <CardDescription>Spoof your GPS location</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid w-full items-center gap-4">
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="lat">Latitude</Label>
+                  <Input
+                    id="lat"
+                    value={gpsLocation.lat}
+                    onChange={(e) => setGpsLocation(prev => ({ ...prev, lat: parseFloat(e.target.value) }))}
+                  />
+                </div>
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="lng">Longitude</Label>
+                  <Input
+                    id="lng"
+                    value={gpsLocation.lng}
+                    onChange={(e) => setGpsLocation(prev => ({ ...prev, lng: parseFloat(e.target.value) }))}
+                  />
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button onClick={handleSpoofGPS}>
+                <MapPin className="mr-2 h-4 w-4" /> Spoof Location
+              </Button>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+        <TabsContent value="ip">
+          <Card>
+            <CardHeader>
+              <CardTitle>IP Geolocation</CardTitle>
+              <CardDescription>Get geolocation data for your IP</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={handleIPLookup}>
+                <Wifi className="mr-2 h-4 w-4" /> Lookup IP
+              </Button>
+              {ipInfo && (
+                <div className="mt-4">
+                  <pre className="bg-gray-100 p-2 rounded">
+                    {JSON.stringify(ipInfo, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}
